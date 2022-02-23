@@ -41,16 +41,17 @@ public class PerfService {
     }
 
     private void end(Perf perf, PerfEnum status, Object error) {
-        PerfDto perfDto = new PerfDto(
-                requestIdService.getRequestId(),
-                perf.getTarget(),
-                perf.getAction(),
-                status,
-                getDurationFrom(perf),
-                computeErrorMessage(error),
-                perf.getDetails());
+        PerfDto perfDto = PerfDto.builder()
+            .requestId(requestIdService.getRequestId())
+            .target(perf.getTarget())
+            .action(perf.getAction())
+            .status(status)
+            .duration(getDurationFrom(perf).toMillis())
+            .error(computeErrorMessage(error))
+            .details(perf.getDetails())
+            .build();
 
-        register(perfDto);
+        toJson(perfDto).ifPresent(perfLogger::info);
     }
 
     private String computeErrorMessage(Object error) {
@@ -69,10 +70,6 @@ public class PerfService {
         } else {
             return error.toString();
         }
-    }
-
-    private void register(PerfDto perfDto) {
-        toJson(perfDto).ifPresent(perfLogger::info);
     }
 
     private Optional<String> toJson(Object object) {

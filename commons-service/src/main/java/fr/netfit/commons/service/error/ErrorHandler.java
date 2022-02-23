@@ -35,7 +35,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<ErrorRecord> handleServiceException(ServiceException ex) {
-        ErrorEnum errorEnum = ex.getErrorStatus();
+        ErrorEnum errorEnum = ex.getError();
 
         log.debug("ServiceException recue avec le status {}", errorEnum, ex);
 
@@ -74,7 +74,6 @@ public class ErrorHandler {
         if (env.acceptsProfiles(Profiles.of("debug"))) {
             return ex.getMessage();
         }
-
         return null;
     }
 

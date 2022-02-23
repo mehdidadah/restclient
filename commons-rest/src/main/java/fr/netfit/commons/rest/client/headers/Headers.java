@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import static org.springframework.util.CollectionUtils.isEmpty;
+
 
 @Getter
 public class Headers {
@@ -33,9 +35,21 @@ public class Headers {
         }
     }
 
+    public void addHeader(@NonNull String key, List<String> values) {
+        if (!isEmpty(values)) {
+            headerMap.computeIfAbsent(key, k -> new ArrayList<>()).addAll(values);
+        }
+    }
+
+    public void merge(Map<String, List<String>> otherHeaders) {
+        if (!isEmpty(otherHeaders)) {
+            otherHeaders.forEach(this::addHeader);
+        }
+    }
+
     public void forEach(@NonNull BiConsumer<String, String> consumer) {
         headerMap.forEach((key, values) ->
-                values.forEach(value -> consumer.accept(key, value)
-                ));
+            values.forEach(value -> consumer.accept(key, value)
+            ));
     }
 }

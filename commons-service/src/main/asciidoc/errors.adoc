@@ -1,0 +1,4 @@
+= List des codes erreurs
+Version {project-version}
+
+include::{snippets-errors}/ErrorEnum.adoc[]

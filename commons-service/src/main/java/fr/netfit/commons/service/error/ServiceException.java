@@ -9,7 +9,7 @@ public class ServiceException extends RuntimeException {
         this.errorEnum = errorEnum;
     }
 
-    public ErrorEnum getErrorStatus() {
+    public ErrorEnum getError() {
         return errorEnum;
     }
 }

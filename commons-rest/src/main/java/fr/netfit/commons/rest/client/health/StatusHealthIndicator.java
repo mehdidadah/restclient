@@ -36,7 +36,7 @@ public class StatusHealthIndicator implements HealthIndicator {
             log.debug("Une erreur est survenue lors du health check", e);
 
             health = Health.down()
-                    .withDetail("error.code", e.getErrorStatus().getResponseStatus().value())
+                    .withDetail("error.code", e.getError().getResponseStatus().value())
                     .withDetail("error.message", e.getMessage());
 
             if (e.getCause() != null) {

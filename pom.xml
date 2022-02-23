@@ -84,6 +84,20 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- TEST -->
+            <dependency>
+                <groupId>org.mock-server</groupId>
+                <artifactId>mockserver-netty</artifactId>
+                <version>5.11.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mock-server</groupId>
+                <artifactId>mockserver-client-java</artifactId>
+                <version>5.11.2</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -99,5 +113,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    
+
 </project>

@@ -22,10 +22,11 @@ import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.cloud.sleuth.Tracer.SpanInScope;
 import org.springframework.lang.Nullable;
 
+import java.net.http.HttpTimeoutException;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
-import static fr.netfit.commons.rest.client.error.ErrorHandlerWrapper.asStringErrorHandler;
+import static fr.netfit.commons.rest.client.error.ErrorHandlerImpl.asStringErrorHandler;
 import static fr.netfit.commons.service.error.ErrorEnum.APPLICATION_ERROR;
 import static fr.netfit.commons.service.error.ErrorEnum.APPLICATION_TIMEOUT;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
@@ -104,7 +105,7 @@ public class RestClientImpl implements RestClient, StatusProvider {
             if (request.getUrl().contains("ping")) {
                 response = requestSender.ping();
             } else {
-                Headers headers = headersService.computeHeaders(request, body, span);
+                Headers headers = headersService.computeHeaders(parameters, request, body, span);
                 response = requestSender.sendRequest(request, headers, body);
             }
 
@@ -124,7 +125,7 @@ public class RestClientImpl implements RestClient, StatusProvider {
                 throw errorHandler.handleError(response);
             }
 
-        } catch (TimeoutException tex) {
+        } catch (HttpTimeoutException tex) {
             perfService.error(perf, tex);
             span.error(tex);
             throw new ServiceException(APPLICATION_TIMEOUT);

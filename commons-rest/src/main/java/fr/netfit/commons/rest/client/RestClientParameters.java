@@ -24,6 +24,9 @@ public class RestClientParameters {
     private final Duration timeout;
 
     @Default
+    private final boolean headersForwardingEnabled = true;
+
+    @Default
     @NonNull
     private final ErrorHandler<?> defaultErrorHandler = new ErrorRecordHandler();
 

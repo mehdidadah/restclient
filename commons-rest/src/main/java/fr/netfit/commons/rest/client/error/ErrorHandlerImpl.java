@@ -17,7 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
 @AllArgsConstructor(access = PRIVATE)
-public class ErrorHandlerWrapper<T> implements ErrorHandler<String> {
+public class ErrorHandlerImpl<T> implements ErrorHandler<String> {
 
     private final ObjectMapper objectMapper;
     private final ErrorHandler<T> errorHandler;
@@ -27,7 +27,7 @@ public class ErrorHandlerWrapper<T> implements ErrorHandler<String> {
         if (Objects.equals(errorHandler.getErrorClass(), String.class)) {
             return (ErrorHandler<String>) errorHandler;
         }
-        return new ErrorHandlerWrapper<>(objectMapper, errorHandler);
+        return new ErrorHandlerImpl<>(objectMapper, errorHandler);
     }
 
     @Override

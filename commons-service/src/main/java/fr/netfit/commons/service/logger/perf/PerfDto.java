@@ -2,15 +2,16 @@ package fr.netfit.commons.service.logger.perf;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Getter;
 
-import java.time.Duration;
 import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 
 @JsonInclude(NON_EMPTY)
 @Getter
+@Builder
 public class PerfDto {
 
     @JsonProperty("request.id")
@@ -33,15 +34,5 @@ public class PerfDto {
 
     @JsonProperty("details")
     private final Map<String, Object> details;
-
-    PerfDto(String requestId, String target, String action, PerfEnum status, Duration duration, String error, Map<String, Object> details) {
-        this.requestId = requestId;
-        this.target = target;
-        this.action = action;
-        this.status = status;
-        this.duration = duration.toMillis();
-        this.error = error;
-        this.details = details;
-    }
 
 }
