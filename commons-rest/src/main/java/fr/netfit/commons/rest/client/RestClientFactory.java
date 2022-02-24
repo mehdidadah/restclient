@@ -13,9 +13,9 @@ public interface RestClientFactory {
     /**
      * Method for creating a new HTTP client from a configuration
      *
-     * @param parameters http client configuration
+     * @param params http client configuration
      * @return the http client
      */
-    RestClient createRestClient(RestClientParameters parameters);
+    RestClient createRestClient(RestClientParams params);
 
 }

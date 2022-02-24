@@ -1,6 +1,6 @@
 package fr.netfit.commons.rest.client;
 
-import fr.netfit.commons.rest.client.error.ErrorRecordHandler;
+import fr.netfit.commons.rest.client.error.ErrorDtoHandlerImpl;
 import fr.netfit.commons.rest.client.request.ErrorHandler;
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -12,7 +12,7 @@ import java.time.Duration;
 
 @Builder
 @Getter
-public class RestClientParameters {
+public class RestClientParams {
 
     @NonNull
     private final String serviceName;
@@ -28,6 +28,6 @@ public class RestClientParameters {
 
     @Default
     @NonNull
-    private final ErrorHandler<?> defaultErrorHandler = new ErrorRecordHandler();
+    private final ErrorHandler<?> defaultErrorHandler = new ErrorDtoHandlerImpl();
 
 }

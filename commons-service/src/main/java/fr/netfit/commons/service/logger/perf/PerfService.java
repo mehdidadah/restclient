@@ -2,7 +2,7 @@ package fr.netfit.commons.service.logger.perf;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.netfit.commons.service.error.ErrorRecord;
+import fr.netfit.commons.service.error.ErrorDto;
 import fr.netfit.commons.service.request.RequestIdService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -41,15 +41,14 @@ public class PerfService {
     }
 
     private void end(Perf perf, PerfEnum status, Object error) {
-        PerfDto perfDto = PerfDto.builder()
-            .requestId(requestIdService.getRequestId())
-            .target(perf.getTarget())
-            .action(perf.getAction())
-            .status(status)
-            .duration(getDurationFrom(perf).toMillis())
-            .error(computeErrorMessage(error))
-            .details(perf.getDetails())
-            .build();
+        PerfDto perfDto = new PerfDto(
+            requestIdService.getRequestId(),
+            perf.target(),
+            perf.action(),
+            status,
+            getDurationFrom(perf).toMillis(),
+            computeErrorMessage(error),
+            perf.details());
 
         toJson(perfDto).ifPresent(perfLogger::info);
     }
@@ -58,14 +57,14 @@ public class PerfService {
         if (error == null) {
             return null;
 
-        } else if (error instanceof String) {
-            return (String) error;
+        } else if (error instanceof String message) {
+            return message;
 
-        } else if (error instanceof Throwable) {
-            return ((Throwable) error).getMessage();
+        } else if (error instanceof Throwable exception) {
+            return exception.getMessage();
 
-        } else if (error instanceof ErrorRecord) {
-            return toJson(error).orElseGet(((ErrorRecord) error)::getDetail);
+        } else if (error instanceof ErrorDto errorDto) {
+            return toJson(error).orElseGet((errorDto)::detail);
 
         } else {
             return error.toString();
@@ -82,7 +81,7 @@ public class PerfService {
     }
 
     private Duration getDurationFrom(Perf perf) {
-        return Duration.between(perf.getStartTime(), Instant.now());
+        return Duration.between(perf.startTime(), Instant.now());
     }
 
 }

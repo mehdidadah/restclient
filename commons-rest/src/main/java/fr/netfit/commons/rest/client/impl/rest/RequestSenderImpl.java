@@ -2,7 +2,7 @@ package fr.netfit.commons.rest.client.impl.rest;
 
 
 import fr.netfit.commons.rest.client.RequestSender;
-import fr.netfit.commons.rest.client.RestClientParameters;
+import fr.netfit.commons.rest.client.RestClientParams;
 import fr.netfit.commons.rest.client.headers.Headers;
 import fr.netfit.commons.rest.client.request.Request;
 import fr.netfit.commons.rest.client.response.ResponseImpl;
@@ -21,12 +21,12 @@ public class RequestSenderImpl implements RequestSender {
     private final RequestSenderMapper senderMapper;
     private final HttpClient httpClient;
 
-    public RequestSenderImpl(RestClientParameters parameters) {
-        this(parameters, createHttpClient(parameters));
+    public RequestSenderImpl(RestClientParams params) {
+        this(params, createHttpClient(params));
     }
 
-    public RequestSenderImpl(RestClientParameters parameters, HttpClient httpClient) {
-        this.senderMapper = new RequestSenderMapper(parameters);
+    public RequestSenderImpl(RestClientParams params, HttpClient httpClient) {
+        this.senderMapper = new RequestSenderMapper(params);
         this.httpClient = httpClient;
     }
 
@@ -46,9 +46,9 @@ public class RequestSenderImpl implements RequestSender {
                 .build();
     }
 
-    private static HttpClient createHttpClient(RestClientParameters parameters) {
+    private static HttpClient createHttpClient(RestClientParams params) {
         return HttpClient.newBuilder()
-                .connectTimeout(parameters.getTimeout())
+                .connectTimeout(params.getTimeout())
                 .build();
     }
 

@@ -17,7 +17,6 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RequiredArgsConstructor
 public enum ErrorEnum {
 
-
     // -- ERREUR GENERIQUE --
     APPLICATION_ERROR(INTERNAL_SERVER_ERROR, Constants.GENERIC_ERROR_MESSAGE, ErrorCodeType.TECHNICAL),
     DATA_INTEGRITY_VIOLATION(INTERNAL_SERVER_ERROR, Constants.GENERIC_ERROR_MESSAGE, ErrorCodeType.TECHNICAL),

@@ -16,7 +16,7 @@ public class PostRequest<T> implements Request, WithBody, WithResponseType<T> {
     @NonNull
     private final String url;
 
-    private final Map<String, Object> parameters;
+    private final Map<String, Object> params;
 
     private final Map<String, String> headers;
 

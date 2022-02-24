@@ -1,6 +1,5 @@
 package fr.netfit.commons.service.error;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -26,21 +25,18 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
-@AllArgsConstructor
 @RestControllerAdvice
-public class ErrorHandler {
-
-    private final Environment env;
-    private final ErrorRecordFactory errorRecordFactory;
+public record ErrorHandler(Environment env,
+                           ErrorFactory errorFactory) {
 
     @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<ErrorRecord> handleServiceException(ServiceException ex) {
+    public ResponseEntity<ErrorDto> handleServiceException(ServiceException ex) {
         ErrorEnum errorEnum = ex.getError();
 
         log.debug("ServiceException recue avec le status {}", errorEnum, ex);
 
-        ErrorRecord errorRecord = errorRecordFactory.createError(errorEnum, "context test");
-        return new ResponseEntity<>(errorRecord, errorEnum.getResponseStatus());
+        ErrorDto errorDto = errorFactory.createError(errorEnum, "context test");
+        return new ResponseEntity<>(errorDto, errorEnum.getResponseStatus());
     }
 
     //@Operation(summary = "Bad request (ErrorCode 4000)", description = "Client sent an invalid request to the server")
@@ -57,17 +53,17 @@ public class ErrorHandler {
         ValidationException.class,
         MissingServletRequestPartException.class
     })
-    public ErrorRecord handleBadRequest(Exception e) {
+    public ErrorDto handleBadRequest(Exception e) {
         log.debug("Erreur de validation", e);
-        return errorRecordFactory.createError(INVALID_REQUEST, getContext(e));
+        return errorFactory.createError(INVALID_REQUEST, getContext(e));
     }
 
     //@Operation(summary = "Internal server error (ErrorCode 1)", description = "Server handled an unexpected error")
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ErrorRecord handleException(Exception ex) {
+    public ErrorDto handleException(Exception ex) {
         log.error("Une exception non geree a ete interceptee : {}", ex.getMessage(), ex);
-        return errorRecordFactory.createError(APPLICATION_ERROR, getContext(ex));
+        return errorFactory.createError(APPLICATION_ERROR, getContext(ex));
     }
 
     private String getContext(Exception ex) {

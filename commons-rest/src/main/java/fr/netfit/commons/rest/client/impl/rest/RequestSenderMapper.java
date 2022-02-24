@@ -1,6 +1,6 @@
 package fr.netfit.commons.rest.client.impl.rest;
 
-import fr.netfit.commons.rest.client.RestClientParameters;
+import fr.netfit.commons.rest.client.RestClientParams;
 import fr.netfit.commons.rest.client.headers.Headers;
 import fr.netfit.commons.rest.client.request.Request;
 import fr.netfit.commons.rest.client.response.ResponseImpl;
@@ -28,12 +28,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 public class RequestSenderMapper {
 
-    private final RestClientParameters parameters;
+    private final RestClientParams params;
     private final UriBuilderFactory factory;
 
-    public RequestSenderMapper(RestClientParameters parameters) {
-        this.parameters = parameters;
-        this.factory = new DefaultUriBuilderFactory(parameters.getRootUri().toString());
+    public RequestSenderMapper(RestClientParams params) {
+        this.params = params;
+        this.factory = new DefaultUriBuilderFactory(params.getRootUri().toString());
     }
 
     HttpRequest mapToHttpRequest(Request request, Headers headers, @Nullable String body) {
@@ -48,7 +48,7 @@ public class RequestSenderMapper {
     }
 
     HttpURLConnection mapToHttpURLConnection() throws IOException {
-        return (HttpURLConnection) new URL(parameters.getRootUri().toString())
+        return (HttpURLConnection) new URL(params.getRootUri().toString())
                 .openConnection();
     }
 
@@ -73,7 +73,7 @@ public class RequestSenderMapper {
     }
 
     private URI createURI(Request request) {
-        return factory.expand(request.getUrl(), request.getParameters());
+        return factory.expand(request.getUrl(), request.getParams());
     }
 
     private Duration getTimeout(Request request) {
@@ -81,6 +81,6 @@ public class RequestSenderMapper {
             return request.getTimeout();
         }
 
-        return parameters.getTimeout();
+        return params.getTimeout();
     }
 }

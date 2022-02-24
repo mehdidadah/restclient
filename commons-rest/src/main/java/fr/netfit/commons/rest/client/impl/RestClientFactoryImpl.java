@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.netfit.commons.rest.client.RequestSender;
 import fr.netfit.commons.rest.client.RestClient;
 import fr.netfit.commons.rest.client.RestClientFactory;
-import fr.netfit.commons.rest.client.RestClientParameters;
+import fr.netfit.commons.rest.client.RestClientParams;
 import fr.netfit.commons.rest.client.headers.HeadersService;
 import fr.netfit.commons.rest.client.impl.rest.RequestSenderImpl;
 import fr.netfit.commons.rest.client.health.StatusHealthIndicator;
@@ -28,31 +28,31 @@ public class RestClientFactoryImpl implements RestClientFactory {
     /**
      * Method for creating a new HTTP client from a configuration
      *
-     * @param parameters http client configuration
+     * @param params http client configuration
      * @return the http client
      */
     @Override
-    public RestClient createRestClient(RestClientParameters parameters) {
-        return createRestClient(parameters, defaultRequestSender(parameters));
+    public RestClient createRestClient(RestClientParams params) {
+        return createRestClient(params, defaultRequestSender(params));
     }
 
     /**
      *
      * Factory to use for tests or for a particular configuration of HttpClient
      *
-     * @param parameters    The parameters to use when creating the RestClient
+     * @param params    The params to use when creating the RestClient
      * @param requestSender The underlying implementation to use
      * @return A new RestClient
-     * @see RestClientFactory#createRestClient(RestClientParameters)
+     * @see RestClientFactory#createRestClient(RestClientParams)
      */
-    public RestClient createRestClient(RestClientParameters parameters, RequestSender requestSender) {
-        RestClientImpl restClient = new RestClientImpl(parameters, headersService, tracer, objectMapper, perfService, requestSender);
-        registry.registerContributor(parameters.getServiceName(), new StatusHealthIndicator(restClient));
+    public RestClient createRestClient(RestClientParams params, RequestSender requestSender) {
+        RestClientImpl restClient = new RestClientImpl(params, headersService, tracer, objectMapper, perfService, requestSender);
+        registry.registerContributor(params.getServiceName(), new StatusHealthIndicator(restClient));
         return restClient;
     }
 
-    private RequestSender defaultRequestSender(RestClientParameters parameters) {
-        return new RequestSenderImpl(parameters);
+    private RequestSender defaultRequestSender(RestClientParams params) {
+        return new RequestSenderImpl(params);
     }
 
 }

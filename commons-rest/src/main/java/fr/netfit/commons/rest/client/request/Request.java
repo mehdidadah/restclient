@@ -11,7 +11,7 @@ public interface Request {
 
     String getUrl();
 
-    Map<String, Object> getParameters();
+    Map<String, Object> getParams();
 
     Map<String, String> getHeaders();
 

@@ -2,7 +2,7 @@ package fr.netfit.commons.rest.client.impl;
 
 import fr.netfit.commons.rest.client.ResponseDto;
 import fr.netfit.commons.rest.client.RestClientFactory;
-import fr.netfit.commons.rest.client.RestClientParameters;
+import fr.netfit.commons.rest.client.RestClientParams;
 import fr.netfit.commons.rest.client.health.StatusHealthIndicator;
 import fr.netfit.commons.rest.client.request.ErrorHandler;
 import fr.netfit.commons.rest.client.request.GetRequest;
@@ -53,7 +53,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 class GetRestClientTest {
 
     private static ClientAndServer mockServer;
-    private static RestClientParameters parameters;
+    private static RestClientParams params;
     private static int port;
 
     @Autowired
@@ -84,7 +84,7 @@ class GetRestClientTest {
     static void start() {
         port = PortFactory.findFreePort();
         mockServer = ClientAndServer.startClientAndServer(port);
-        parameters = RestClientParameters.builder()
+        params = RestClientParams.builder()
                 .rootUri(URI.create("http://localhost:" + port))
                 .serviceName("MockTest")
                 .timeout(Duration.ofSeconds(1))
@@ -123,11 +123,11 @@ class GetRestClientTest {
                                 .withHeader("Content-Type", APPLICATION_JSON_VALUE)
                                 .withBody("{\"name\":\"Mehdi\", \"age\":31,\"status\":true}"));
 
-        var restClient = factory.createRestClient(parameters);
+        var restClient = factory.createRestClient(params);
 
         var request = GetRequest.<ResponseDto>builder()
                 .url("/api")
-                .header("HEADER-CUSTOM", "Une valeur de header")
+                .headers(Map.of("HEADER-CUSTOM", "Une valeur de header"))
                 .responseType(ResponseDto.class)
                 .build();
 
@@ -136,9 +136,9 @@ class GetRestClientTest {
 
         // THEN
         assertThat(result).get().satisfies(actual -> {
-            assertThat(actual.getName()).isEqualTo("Mehdi");
-            assertThat(actual.isStatus()).isTrue();
-            assertThat(actual.getAge()).isEqualTo(31);
+            assertThat(actual.name()).isEqualTo("Mehdi");
+            assertThat(actual.status()).isTrue();
+            assertThat(actual.age()).isEqualTo(31);
         });
 
         verify(perfService).startPerf("http://localhost:" + port + "/api", "GET");
@@ -164,11 +164,11 @@ class GetRestClientTest {
                     .withBody("{\"name\":\"Mehdi\", \"value\":31,\"status\":true}")
                     .withDelay(SECONDS, 2));
 
-        var restClient = factory.createRestClient(parameters);
+        var restClient = factory.createRestClient(params);
 
         var request = GetRequest.<ResponseDto>builder()
             .url("/api")
-            .header("HEADER-CUSTOM", "Une valeur de header")
+            .headers(Map.of("HEADER-CUSTOM", "Une valeur de header"))
             .responseType(ResponseDto.class)
             .build();
 
@@ -201,11 +201,11 @@ class GetRestClientTest {
                     .withHeader("Content-Type", APPLICATION_JSON_VALUE)
                     .withBody("{\"status\": 400}"));
 
-        var restClient = factory.createRestClient(parameters);
+        var restClient = factory.createRestClient(params);
 
         var request = GetRequest.<ResponseDto>builder()
             .url("/api")
-            .header("HEADER-CUSTOM", "Une valeur de header")
+            .headers(Map.of("HEADER-CUSTOM", "Une valeur de header"))
             .responseType(ResponseDto.class)
             .errorHandler(errorHandler)
             .build();
@@ -219,7 +219,7 @@ class GetRestClientTest {
 
         verify(perfService).startPerf("http://localhost:" + port + "/api", "GET");
         verify(perf).addDetails("http.status", 400);
-        verify(perfService).error(eq(perf), eq("{\"status\": 400}"));
+        verify(perfService).error(perf, "{\"status\": 400}");
         verify(errorHandler).handleError(responseCaptor.capture());
 
         Response<String> actualResponse = responseCaptor.getValue();

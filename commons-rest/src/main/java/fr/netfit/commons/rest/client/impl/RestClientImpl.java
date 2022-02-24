@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.netfit.commons.rest.client.RequestSender;
 import fr.netfit.commons.rest.client.RestClient;
-import fr.netfit.commons.rest.client.RestClientParameters;
+import fr.netfit.commons.rest.client.RestClientParams;
 import fr.netfit.commons.rest.client.headers.Headers;
 import fr.netfit.commons.rest.client.headers.HeadersService;
 import fr.netfit.commons.rest.client.health.StatusProvider;
@@ -24,7 +24,6 @@ import org.springframework.lang.Nullable;
 
 import java.net.http.HttpTimeoutException;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import static fr.netfit.commons.rest.client.error.ErrorHandlerImpl.asStringErrorHandler;
 import static fr.netfit.commons.service.error.ErrorEnum.APPLICATION_ERROR;
@@ -36,7 +35,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Slf4j
 public class RestClientImpl implements RestClient, StatusProvider {
 
-    private final RestClientParameters parameters;
+    private final RestClientParams params;
     private final HeadersService headersService;
     private final Tracer tracer;
 
@@ -47,18 +46,18 @@ public class RestClientImpl implements RestClient, StatusProvider {
 
     private final ErrorHandler<String> defaultErrorHandler;
 
-    public RestClientImpl(RestClientParameters parameters,
+    public RestClientImpl(RestClientParams params,
                           HeadersService headersService,
                           Tracer tracer,
                           ObjectMapper objectMapper,
                           PerfService perfService, RequestSender requestSender) {
-        this.parameters = parameters;
+        this.params = params;
         this.headersService = headersService;
         this.tracer = tracer;
         this.objectMapper = objectMapper;
         this.perfService = perfService;
         this.requestSender = requestSender;
-        this.defaultErrorHandler = asStringErrorHandler(objectMapper, parameters.getDefaultErrorHandler());
+        this.defaultErrorHandler = asStringErrorHandler(objectMapper, params.getDefaultErrorHandler());
     }
 
     @Override
@@ -93,7 +92,7 @@ public class RestClientImpl implements RestClient, StatusProvider {
     }
 
     private Response<String> execute(Request request, @Nullable String body) {
-        String target = parameters.getRootUri().toASCIIString() + request.getUrl();
+        String target = params.getRootUri().toASCIIString() + request.getUrl();
         String action = request.getMethod();
 
         Perf perf = perfService.startPerf(target, action);
@@ -105,7 +104,7 @@ public class RestClientImpl implements RestClient, StatusProvider {
             if (request.getUrl().contains("ping")) {
                 response = requestSender.ping();
             } else {
-                Headers headers = headersService.computeHeaders(parameters, request, body, span);
+                Headers headers = headersService.computeHeaders(params, request, body, span);
                 response = requestSender.sendRequest(request, headers, body);
             }
 

@@ -1,6 +1,6 @@
 package fr.netfit.commons.rest.client.headers;
 
-import fr.netfit.commons.rest.client.RestClientParameters;
+import fr.netfit.commons.rest.client.RestClientParams;
 import fr.netfit.commons.rest.client.request.Request;
 import fr.netfit.commons.service.request.RequestHeadersService;
 import fr.netfit.commons.service.request.RequestIdService;
@@ -22,14 +22,14 @@ public class HeadersService {
     private final RequestHeadersService requestHeadersService;
     private final Propagator propagator;
 
-    public Headers computeHeaders(RestClientParameters parameters, Request request, String jsonBody, Span span) {
+    public Headers computeHeaders(RestClientParams params, Request request, String jsonBody, Span span) {
         Headers headers = new Headers(request);
 
         if (jsonBody != null) {
             headers.setHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         }
 
-        if (parameters.isHeadersForwardingEnabled()) {
+        if (params.isHeadersForwardingEnabled()) {
             headers.merge(requestHeadersService.getTechnicalHeadersMap());
         }
 

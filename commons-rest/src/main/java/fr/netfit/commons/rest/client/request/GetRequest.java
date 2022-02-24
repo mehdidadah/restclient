@@ -7,6 +7,7 @@ import lombok.Singular;
 import org.springframework.lang.NonNull;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 
 @Builder
@@ -16,10 +17,8 @@ public class GetRequest<T> implements Request, WithResponseType<T> {
     @NonNull
     private final String url;
 
-    @Singular
-    private final Map<String, Object> parameters;
+    private final Map<String, Object> params = new HashMap<>();
 
-    @Singular
     private final Map<String, String> headers;
 
     @NonNull

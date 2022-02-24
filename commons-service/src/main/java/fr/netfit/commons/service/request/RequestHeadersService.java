@@ -23,8 +23,9 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class RequestHeadersService {
 
     public static final String X_FORWARDED_FOR = "X-Forwarded-For";
+    public static final String X_FORWARDED_PORT = "X-Forwarded-Port";
 
-    private static final Set<String> ALLOWED_TECHNICAL_HEADER_NAME_SET = Stream.of(X_FORWARDED_FOR, ACCEPT_LANGUAGE)
+    private static final Set<String> ALLOWED_TECHNICAL_HEADER_NAME_SET = Stream.of(X_FORWARDED_FOR, X_FORWARDED_PORT, ACCEPT_LANGUAGE)
             .map(String::toUpperCase)
             .collect(Collectors.toSet());
 

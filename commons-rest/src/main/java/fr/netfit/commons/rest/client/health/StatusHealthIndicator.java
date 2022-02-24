@@ -2,7 +2,6 @@ package fr.netfit.commons.rest.client.health;
 
 import fr.netfit.commons.rest.client.response.Response;
 import fr.netfit.commons.service.error.ServiceException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -11,11 +10,8 @@ import org.springframework.lang.NonNull;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 @Slf4j
-@RequiredArgsConstructor
-public class StatusHealthIndicator implements HealthIndicator {
-
-    @NonNull
-    private final StatusProvider client;
+public record StatusHealthIndicator(
+    @NonNull StatusProvider client) implements HealthIndicator {
 
     @Override
     public Health health() {
