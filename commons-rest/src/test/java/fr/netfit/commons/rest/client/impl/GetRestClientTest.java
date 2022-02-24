@@ -121,7 +121,7 @@ class GetRestClientTest {
                 .respond(
                         HttpResponse.response()
                                 .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                                .withBody("{\"name\":\"Mehdi\", \"age\":31,\"status\":true}"));
+                                .withBody("{\"name\":\"Mehdi\", \"age\":31,\"available\":true}"));
 
         var restClient = factory.createRestClient(params);
 
@@ -137,7 +137,7 @@ class GetRestClientTest {
         // THEN
         assertThat(result).get().satisfies(actual -> {
             assertThat(actual.name()).isEqualTo("Mehdi");
-            assertThat(actual.status()).isTrue();
+            assertThat(actual.available()).isTrue();
             assertThat(actual.age()).isEqualTo(31);
         });
 
@@ -161,7 +161,7 @@ class GetRestClientTest {
             .respond(
                 HttpResponse.response()
                     .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                    .withBody("{\"name\":\"Mehdi\", \"value\":31,\"status\":true}")
+                    .withBody("{\"name\":\"Mehdi\", \"value\":31,\"available\":true}")
                     .withDelay(SECONDS, 2));
 
         var restClient = factory.createRestClient(params);

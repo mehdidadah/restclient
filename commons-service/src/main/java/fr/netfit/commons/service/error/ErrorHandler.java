@@ -1,5 +1,6 @@
 package fr.netfit.commons.service.error;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -39,7 +40,7 @@ public record ErrorHandler(Environment env,
         return new ResponseEntity<>(errorDto, errorEnum.getResponseStatus());
     }
 
-    //@Operation(summary = "Bad request (ErrorCode 4000)", description = "Client sent an invalid request to the server")
+    @Operation(summary = "Bad request", description = "Client sent an invalid request to the server")
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler({
         MethodArgumentNotValidException.class,
@@ -58,7 +59,7 @@ public record ErrorHandler(Environment env,
         return errorFactory.createError(INVALID_REQUEST, getContext(e));
     }
 
-    //@Operation(summary = "Internal server error (ErrorCode 1)", description = "Server handled an unexpected error")
+    @Operation(summary = "Internal server error", description = "Server handled an unexpected error")
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorDto handleException(Exception ex) {
